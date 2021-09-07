@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { Modal, Button, Form, Input, DatePicker } from 'antd';
+import { Modal, Button, Form, Input, message } from 'antd';
 import React, {useState} from 'react';
 
 const initialFormValues = {
-  created: '',
-  description: '',
+  created: "",
+  description: "",
   email: '',
   name: '',
 }
@@ -35,19 +35,27 @@ const ModalForm = () => {
 
     const handleOk = () => {
 
-      const options = {
-          method: 'POST',
-          headers: {
-              'Content-type': 'text/plain', // or remove this headers section
-        }
-      };
+      if(name == '' || email == '') {
+        message.error('There are empty required fields');
+
+        return
+      }
         
       axios.post(`http://localhost:1337/companies`, formValues)
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-      })
-        setIsModalVisible(false);
+        .then(res => {
+          console.log(res);
+          console.log(res.data);
+
+          message.success('The company '+res.data.name+' was successfully saved');
+
+          setIsModalVisible(false);
+          setFormValues(initialFormValues);
+        })
+        .catch(function (error) {
+          message.error(error.response.statusText);
+      });
+
+        
     };
 
     const handleCancel = () => {
@@ -63,6 +71,7 @@ const ModalForm = () => {
             <Form>
                 <Input
                   type="text"
+                  required
                   placeholder="Name Company"
                   className="form-control"
                   value={name}

@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
 import TableCompanies from './components/TableCompanies';
 import ModalForm from './components/ModalForm';
 import { DatePicker, Table, Tag, Space, Button,TextArea  } from 'antd';
@@ -27,23 +28,17 @@ function App() {
 
   const [companies, setCompanies] = useState(initialCompanies);
 
-  const getCompanies = async () => {
-    const url = 'http://localhost:1337/companies';
-    const res = await fetch(url);
-    const newCompanies = await res.json();
-
-    setCompanies(newCompanies);
-}
+  const getCompanies = () => {
+    axios.get(`http://localhost:1337/companies`)
+      .then(res => {
+        const companies = res.data;
+        setCompanies(companies);
+      })
+  } 
 
     useEffect(() => {
       getCompanies()
     }, [companies])
-
-/*const { data, status } = useQuery('planets', fetchPlanets);
-
-  if (isLoading) return "Loading...";
-
-  if (error) return "An error has occurred: " + error.message;*/
 
    return (
     <div> <br/>
